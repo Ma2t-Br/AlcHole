@@ -1,30 +1,29 @@
 <template>
-  <div class="relative w-full flex flex-col items-center">
+  <div class="carousel-container">
     <!-- Flèche gauche -->
     <button
-      class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/30 hover:bg-white/50 rounded-full p-2 shadow-lg transition disabled:opacity-30"
+      class="carousel-arrow left"
       @click="prev"
       :disabled="selectedIndex === 0"
       aria-label="Précédent"
     >
-      <span class="text-2xl">◀</span>
+      <span style="font-size: 1.2rem; color: #222;">◀</span>
     </button>
-
     <!-- Carrousel -->
-    <div class="flex items-center justify-center w-full overflow-hidden" style="min-height: 220px;">
-      <div class="relative flex items-center w-full justify-center">
+    <div class="carousel-inner">
+      <div class="carousel-items">
         <div
           v-for="(drink, i) in drinkTemplates"
           :key="drink.id"
           @click="handleClick(i)"
           class="coverflow-item cursor-pointer transition-all duration-500"
           :class="coverflowClass(i)"
-          :style="coverflowStyle(i)"
+          :style="coverflowDisplayStyle(i)"
         >
           <div class="text-center select-none">
-            <div class="text-5xl mb-3">{{ drink.emoji }}</div>
-            <h3 class="text-white font-semibold text-base mb-2">{{ drink.name }}</h3>
-            <div class="text-white/80 text-xs">
+            <div style="font-size: 2rem; margin-bottom: 0.2rem;">{{ drink.emoji }}</div>
+            <h3 style="color: #222; font-size: 0.95rem; font-weight: 500; margin-bottom: 0.1rem;">{{ drink.name }}</h3>
+            <div style="color: #444; font-size: 0.7rem;">
               <div>{{ drink.volume }}ml</div>
               <div>{{ drink.alcoholPercentage }}°</div>
             </div>
@@ -32,15 +31,14 @@
         </div>
       </div>
     </div>
-
     <!-- Flèche droite -->
     <button
-      class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/30 hover:bg-white/50 rounded-full p-2 shadow-lg transition disabled:opacity-30"
+      class="carousel-arrow right"
       @click="next"
       :disabled="selectedIndex === drinkTemplates.length - 1"
       aria-label="Suivant"
     >
-      <span class="text-2xl">▶</span>
+      <span style="font-size: 1.2rem; color: #222;">▶</span>
     </button>
   </div>
 </template>
@@ -150,6 +148,20 @@ const coverflowStyle = (i: number) => {
   }
 }
 
+// Ajout de la fonction pour masquer les éléments trop éloignés
+const coverflowDisplayStyle = (i: number) => {
+  if (Math.abs(i - selectedIndex.value) > 1) {
+    return { display: 'none' };
+  }
+  // Ajustement du décalage horizontal pour un alignement parfait
+  const offset = i - selectedIndex.value;
+  return {
+    transform: `translateX(${offset * 115}px) scale(${i === selectedIndex.value ? 1.1 : 0.95}) rotateY(${offset * 20}deg)`,
+    top: '50%',
+    marginTop: '-50px', // moitié de la hauteur (100px)
+  };
+}
+
 // Sélection initiale (optionnel)
 watch(drinkTemplates, () => {
   if (drinkTemplates.value.length > 0 && selectedIndex.value === 0) {
@@ -159,30 +171,75 @@ watch(drinkTemplates, () => {
 </script>
 
 <style scoped>
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  height: 120px;
+  margin: 0 auto 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+.carousel-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-items {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.25);
+  border-radius: 50%;
+  padding: 0.3rem 0.5rem;
+  font-size: 1.2rem;
+  box-shadow: none;
+  border: none;
+  z-index: 2;
+}
+.carousel-arrow.left {
+  left: 0;
+}
+.carousel-arrow.right {
+  right: 0;
+}
 .coverflow-item {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
-  width: 180px;
-  min-height: 200px;
-  margin-left: -90px;
+  width: 110px;
+  min-height: 100px;
+  margin-left: -55px;
+  margin-top: -50px;
   background: rgba(255,255,255,0.15);
-  border-radius: 1.5rem;
-  border: 2px solid rgba(255,255,255,0.2);
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+  border-radius: 1rem;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
   transition: all 0.5s cubic-bezier(.4,2,.6,1);
   cursor: pointer;
   user-select: none;
+  z-index: 1;
 }
 .coverflow-center {
-  border: 2px solid #facc15;
-  background: rgba(255,255,255,0.35);
-  filter: brightness(1.1) drop-shadow(0 0 8px #facc15cc);
+  border: 1.5px solid #facc15;
+  background: rgba(255,255,255,0.30);
+  filter: brightness(1.05) drop-shadow(0 0 4px #facc15cc);
 }
 .coverflow-side {
-  filter: blur(0.5px) brightness(0.95);
+  filter: blur(0.3px) brightness(0.95);
 }
 .coverflow-far {
-  filter: blur(1.5px) brightness(0.8);
+  filter: blur(1px) brightness(0.8);
 }
 </style>

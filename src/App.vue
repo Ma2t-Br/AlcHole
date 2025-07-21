@@ -1,26 +1,17 @@
 <template>
-  <div id="app">
-    <div class="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-800">
-      <!-- Header -->
-      <header class="text-center py-8">
-        <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-          🍺 Sobriété Timer
-        </h1>
-        <p class="text-xl text-white/90 max-w-2xl mx-auto px-4">
-          Calcule ton temps restant avant d'être sobre !
-        </p>
+  <div id="app" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: none;">
+    <div style="width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1; background: linear-gradient(120deg, rgba(255,255,255,0.7) 0%, rgba(230,236,240,0.8) 100%);"></div>
+    <div class="glass-container" style="max-width: 480px; width: 100%; margin: 0; padding: 2rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <header class="text-center" style="margin-bottom: 1.5rem;">
+        <h1 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; color: #222;">🍺 AlcHole</h1>
+        <p style="font-size: 1rem; color: #444; margin: 0;">Calcule ton temps restant avant d'être sobre !</p>
       </header>
-
-      <!-- Main Content -->
-      <main class="container mx-auto px-4 pb-8">
+      <main style="width: 100%;">
         <transition name="fade" mode="out-in">
-          <!-- Form Page -->
-          <div v-if="!showResults" key="form" class="max-w-4xl mx-auto">
+          <div v-if="!showResults" key="form">
             <AlcoholForm @submit="handleFormSubmit" :saved-data="savedData" />
           </div>
-
-          <!-- Results Page -->
-          <div v-else key="results" class="max-w-2xl mx-auto">
+          <div v-else key="results">
             <ResultsDisplay 
               :bac="bloodAlcoholContent"
               :timer-data="timerData"
@@ -157,11 +148,9 @@ onMounted(() => {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.5s ease;
 }
-
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
